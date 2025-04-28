@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Habbit tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .circle-bg {
+      stroke: #e6e6e6;
+    }
+    .circle-progress {
+      stroke: #10b981;
+      stroke-dasharray: 314;
+      stroke-dashoffset: 314;
+      stroke-linecap: round;
+    }
+    label{
+        font-size: 20px;
+        font-family:monospace;
+        color:#042960;
+    }
+    @keyframes wiggle {
+        0%, 100% { transform: rotate(6deg); }
+        50% { transform: rotate(-6deg); }
+    }
+    @keyframes wiggle-mirror {
+        0%, 100% { transform: rotate(-6deg); }
+        50% { transform: rotate(6deg); }
+    }
+    @keyframes spin-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .animate-wiggle {
+        animation: wiggle 1s ease-in-out infinite;
+    }
+    .animate-wiggle-mirror {
+        animation: wiggle-mirror 1s ease-in-out infinite;
+    }
+    .animate-spin-slow {
+        animation: spin-slow 3s linear infinite;
+    }
+  </style>
+</head>
+<body class=" bg-purple-200 ">
+
+    <div class="bg-purple-500 text-white p-4 flex items-center justify-between">
+      
+        <div class="text-4xl font-extrabold bg-clip-text text-white bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
+            <span class="inline-block animate-bounce">H</span>
+            <span class="inline-block rotate-6 hover:rotate-12 hover:scale-125 transition-all duration-300 animate-wiggle">i</span>&nbsp;&nbsp; 
+            <span class="inline-block -rotate-6 hover:rotate-12 hover:scale-125 transition-all duration-300 animate-wiggle-mirror">H</span>
+            <span class="inline-block rotate-3 hover:-rotate-12 hover:scale-125 transition-all duration-300 animate-pulse">a</span>
+            <span class="inline-block -rotate-3 hover:rotate-12 hover:scale-125 transition-all duration-300 animate-wiggle">n</span>
+            <span class="inline-block rotate-6 hover:-rotate-12 hover:scale-125 transition-all duration-300 animate-wiggle-mirror">i</span>
+            <span class="inline-block -rotate-6 hover:rotate-12 hover:scale-125 transition-all duration-300 animate-pulse">a</span>
+            <span class="text-5xl inline-block animate-spin-slow hover:animate-ping">!</span>
+        </div>
+        <div class="bg-white p-3 rounded-xl shadow-lg w-72 text-center">
+            <div class="text-center mb-4">
+                <div id="currentDateTime" class="text-xl font-medium text-gray-700"></div>
+            </div>
+        </div>
+    </div>
+      <div class="min-h-screen bg-purple-200 flex flex-col items-center justify-center p-4">
+
+    <div class="flex flex-col sm:flex-row sm:space-x-6 space-y-6 sm:space-y-0 mt-6">
+    
+    <!-- Top card -->
+    <div class="bg-white p-6 rounded-2xl shadow-lg w-72 text-center">
+      <h2 class="text-2xl font-bold text-green-600 mb-4">Namaz Checklist </h2>
+      <div class="flex flex-col space-y-2 text-left">
+        <label class="flex items-center"><input type="checkbox" class="mr-2"> Tahajjud</label>
+        <label class="flex items-center"><input type="checkbox" class="mr-2"> Fajr</label>
+        <label class="flex items-center"><input type="checkbox" class="mr-2"> Dhuhr</label>
+        <label class="flex items-center"><input type="checkbox" class="mr-2"> Asr</label>
+        <label class="flex items-center"><input type="checkbox" class="mr-2"> Maghrib</label>
+        <label class="flex items-center"><input type="checkbox" class="mr-2"> Isha</label>
+      </div>
+    </div>
+    <div class="bg-white p-6 rounded-2xl shadow-lg w-72 text-center">
+        <h2 class="text-2xl font-bold text-green-600 mb-4">AZKAR Checklist </h2>
+        <div class="flex flex-col space-y-2 text-left">
+          <label class="flex items-center"><input type="checkbox" class="mr-2"> Morning Azkar</label>
+          <label class="flex items-center"><input type="checkbox" class="mr-2"> Evening Azkar</label>
+          <label class="flex items-center"><input type="checkbox" class="mr-2"> Repentance zikr Astaghfar</label>
+          <label class="flex items-center"><input type="checkbox" class="mr-2"> Dhikr</label>
+         
+        </div>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow-lg w-72 text-center">
+        <h2 class="text-2xl font-bold text-green-600 mb-4">Connecting with Quran </h2>
+
+      <div class="flex flex-col space-y-2 text-left mb-4">
+        <label class="flex items-center"><input type="checkbox" class="mr-2"> Quran Reading</label>
+        <label class="flex items-center"><input type="checkbox" class="mr-2"> Quran Taddabur</label>
+        <label class="flex items-center"><input type="checkbox" class="mr-2"> Quran Journaling</label>
+   </div></div>
+  <!-- Third card - Progress -->
+<div class="bg-white p-6 rounded-2xl shadow-lg w-64 text-center flex flex-col items-center">
+    <!-- Progress circle container -->
+    <div class="relative w-40 h-40 mb-4"> <!-- Added relative positioning and fixed size -->
+      <svg class="transform -rotate-90 w-full h-full" viewBox="0 0 160 160">
+        <circle cx="80" cy="80" r="50" stroke-width="10" fill="none" class="stroke-gray-200"/>
+        <circle id="progress-circle" cx="80" cy="80" r="50" stroke-width="10" fill="none" 
+                class="stroke-green-500" stroke-dasharray="314" stroke-dashoffset="314"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <span id="progress-text" class="text-2xl font-bold text-green-500">0%</span>
+      </div>
+    </div>
+    
+    <h2 class="text-2xl font-bold text-green-600 mb-2">Progress</h2>
+    <p class="text-gray-600">You're crushing your goals! 🚀</p>
+  </div>
+</div>
+
+    <!-- Bottom two cards (flex row) -->
+    <div class="flex flex-col sm:flex-row sm:space-x-6 space-y-6 sm:space-y-0 mt-6">
+      
+      <!-- Second card -->
+      <div class="bg-white p-6 rounded-2xl shadow-lg w-68 text-center">
+        <h2 class="text-2xl font-bold text-green-600 mb-2">Daily Habits</h2>
+        <p class="text-gray-600 mb-4">Keep ticking small habits daily to build consistency!</p>
+        
+        <!-- Add New Habit Input -->
+        <div class="flex mb-3">
+          <input 
+            type="text" 
+            id="newHabitInput" 
+            placeholder="Add new habit..." 
+            class="flex-1 px-2 py-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+          >
+          <button 
+            onclick="addHabit()"
+            class="bg-green-500 text-white px-3 py-2 rounded-r-lg hover:bg-green-600 transition"
+          >
+            Add
+          </button>
+        </div>
+      
+        <!-- Scrollable Habits List -->
+        <div class="h-96 overflow-y-auto">
+            <div id="habitsContainer" class="flex flex-col space-y-2 text-left pr-2">
+              <!-- Existing habits with delete buttons -->
+              <div class="flex items-center justify-between group">
+                <label class="flex items-center">
+                  <input type="checkbox" class="mr-2"> Read Islamic book
+                </label>
+                <button class="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" onclick="deleteHabit(this)">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div class="flex items-center justify-between group">
+                <label class="flex items-center">
+                  <input type="checkbox" class="mr-2"> Learn new Hadith
+                </label>
+                <button class="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" onclick="deleteHabit(this)">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              <div class="flex items-center justify-between group">
+                <label class="flex items-center">
+                  <input type="checkbox" class="mr-2"> Excercise
+                </label>
+                <button class="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" onclick="deleteHabit(this)">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              
+              <!-- Add similar structure for other habits -->
+              <div class="flex items-center justify-between group">
+                <label class="flex items-center">
+                  <input type="checkbox" class="mr-2"> Arabic Practice
+                </label>
+                <button class="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" onclick="deleteHabit(this)">
+                  <!-- Same cross icon SVG -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              <div class="flex items-center justify-between group">
+                <label class="flex items-center">
+                  <input type="checkbox" class="mr-2"> Healthy meal
+                </label>
+                <button class="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" onclick="deleteHabit(this)">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              
+              
+              <!-- Continue for other habits... -->
+            </div>
+          </div>
+          
+         
+      </div>
+      
+      
+      
+
+    
+    </div>
+  </div>
+
+  <script>
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const circle = document.getElementById('progress-circle');
+    const text = document.getElementById('progress-text');
+
+    function updateProgress() {
+      const total = checkboxes.length;
+      let checked = 0;
+
+      checkboxes.forEach(box => {
+        if (box.checked) checked++;
+      });
+
+      const percentage = Math.round((checked / total) * 100);
+      const radius = 50;
+      const circumference = 2 * Math.PI * radius;
+      const offset = circumference - (percentage / 100 * circumference);
+
+      circle.style.strokeDashoffset = offset;
+      text.innerText = percentage + "%";
+    }
+
+    // Add event listeners to all checkboxes
+    checkboxes.forEach(box => {
+      box.addEventListener('change', updateProgress);
+    });
+
+    // Initialize progress
+    updateProgress();
+
+    function addHabit() {
+  const input = document.getElementById('newHabitInput');
+  const habitText = input.value.trim();
+  
+  if (habitText) {
+    const habitsContainer = document.getElementById('habitsContainer');
+    
+    // Create container div for habit item
+    const habitItem = document.createElement('div');
+    habitItem.className = 'flex items-center justify-between group hover:bg-gray-50 px-2 py-1 rounded';
+    
+    // Create label with checkbox
+    const label = document.createElement('label');
+    label.className = 'flex items-center flex-1';
+    label.innerHTML = `<input type="checkbox" class="mr-2"> ${habitText}`;
+    
+    // Create delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity p-1';
+    deleteBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+      </svg>
+    `;
+    deleteBtn.onclick = function() { deleteHabit(this); };
+    
+    // Append elements
+    habitItem.appendChild(label);
+    habitItem.appendChild(deleteBtn);
+    habitsContainer.appendChild(habitItem);
+    
+    input.value = ''; // Clear input
+    
+    // Update progress calculation
+    if (typeof updateProgress === 'function') {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(box => {
+        box.addEventListener('change', updateProgress);
+      });
+      updateProgress(); // Update immediately after adding
+    }
+  }
+}
+
+// Delete habit function
+function deleteHabit(button) {
+  const habitItem = button.parentNode;
+  habitItem.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+  setTimeout(() => {
+    habitItem.remove();
+    if (typeof updateProgress === 'function') {
+      updateProgress();
+    }
+  }, 300); // Match the duration of the transition
+}
+
+// Enter key handler
+document.getElementById('newHabitInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    addHabit();
+  }
+});
+  
+
+
+
+  function updateDateTime() {
+  const now = new Date();
+  
+  // Format date (e.g., "Fri Apr 28 2023")
+  const dateString = now.toDateString();
+  
+  // Format time in 12-hour format with AM/PM
+  const timeString = now.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
+  
+  document.getElementById('currentDateTime').innerHTML = `
+    <div>${dateString}</div>
+    <div class="text-xl font-semibold mt-1">${timeString}</div>
+  `;
+}
+
+// Update immediately and then every second
+updateDateTime();
+setInterval(updateDateTime, 1000);
+
+  </script>
+  </div>
+</body>
+</html>
